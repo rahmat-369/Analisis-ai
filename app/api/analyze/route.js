@@ -1,6 +1,14 @@
+export async function GET() {
+  return Response.json({ message: "API hidup 🔥" });
+}
+
 export async function POST(req) {
   try {
     const { imageBase64 } = await req.json();
+
+    if (!imageBase64) {
+      return Response.json({ error: "Gambar tidak ada" });
+    }
 
     const response = await fetch(
       "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" +
@@ -15,7 +23,7 @@ export async function POST(req) {
             {
               parts: [
                 {
-                  text: "Analisis daun ini. Sebutkan kemungkinan penyakit dan saran singkat."
+                  text: "Analisis daun ini. Sebutkan kemungkinan penyakit dan saran singkat.",
                 },
                 {
                   inlineData: {
@@ -34,10 +42,10 @@ export async function POST(req) {
 
     const result =
       data.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "Tidak ada respon";
+      "Tidak ada respon dari AI";
 
     return Response.json({ result });
   } catch (error) {
     return Response.json({ error: error.message });
   }
-                  }
+        }
